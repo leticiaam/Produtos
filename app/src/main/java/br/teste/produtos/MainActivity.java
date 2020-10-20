@@ -5,16 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 
 import br.teste.produtos.modelo.Produto;
@@ -25,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private final int RESULT_CODE_NOVO_PRODUTO = 10;
     private final int REQUEST_CODE_EDITAR_PRODUTO = 2;
     private final int RESULT_CODE_PRODUTO_EDITADO = 11;
+    private final int RESULT_CODE_PRODUTO_EXCLUIDO = 9;
 
     private ListView listViewProdutos;
     private ArrayAdapter<Produto> adapterProdutos;
@@ -64,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+
+
     public void onClickNovoProduto(View v) {
         Intent intent = new Intent(MainActivity.this, CadastroProdutoActivity.class);
         startActivityForResult(intent, REQUEST_CODE_NOVO_PRODUTO);
@@ -81,10 +82,18 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Produto Editado", Toast.LENGTH_LONG).show();
             for (int i = 0; i < adapterProdutos.getCount(); i++){
                 Produto produto = adapterProdutos.getItem(i);
-                if (produto.getId() == produtoEditado.getId()){
+                if (produto.getId() == produtoEditado.getId()) {
                     adapterProdutos.remove(produto);
                     adapterProdutos.insert(produtoEditado, i);
-                    break;
+                }
+            }
+        } else if (resultCode == RESULT_CODE_PRODUTO_EXCLUIDO && requestCode == REQUEST_CODE_EDITAR_PRODUTO) {
+            Produto produtoExcluido = (Produto) data.getExtras().getSerializable("produtoExcluido");
+            Toast.makeText(MainActivity.this, "Produto Excluido", Toast.LENGTH_LONG).show();
+            for (int i = 0; i < adapterProdutos.getCount(); i++){
+                Produto produto = adapterProdutos.getItem(i);
+                if (produto.getId() == produtoExcluido.getId()) {
+                    adapterProdutos.remove(produto);
                 }
             }
         }
