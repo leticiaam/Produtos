@@ -1,4 +1,4 @@
-package br.teste.produtos.database;
+package br.teste.produtos.database.entity;
 
 import android.provider.BaseColumns;
 

@@ -6,15 +6,19 @@ import java.io.Serializable;
 
 public class Produto implements Serializable {
 
-
+    private int id;
     private String nome;
     private Float valor;
-    private int id;
 
     public Produto(int id, String nome, Float valor) {
+        this.id = id;
         this.nome = nome;
         this.valor = valor;
-        this.id = id;
+    }
+
+    public Produto(String nome, Float valor){
+        this.nome = nome;
+        this.valor = valor;
     }
 
 
@@ -47,7 +51,7 @@ public class Produto implements Serializable {
     @NonNull
     @Override
     public String toString(){
-        return nome;
+        return id + " - " + nome;
     }
 
 

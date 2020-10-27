@@ -10,15 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import br.teste.produtos.database.ProdutoDAO;
 import br.teste.produtos.modelo.Produto;
 
 public class CadastroProdutoActivity extends AppCompatActivity {
 
-    private final int RESULT_CODE_PRODUTO_EDITADO = 11;
-    private final  int RESULT_CODE_NOVO_PRODUTO = 10;
     private final int RESULT_CODE_PRODUTO_EXCLUIDO = 9;
 
-    private boolean edicao = false;
+
     private int id = 0;
 
     @Override
@@ -39,7 +38,6 @@ public class CadastroProdutoActivity extends AppCompatActivity {
             EditText editTextValor = findViewById(R.id.editText_valor);
             editTextNome.setText(produto.getNome());
             editTextValor.setText(String.valueOf(produto.getValor()));
-            edicao = true;
             id = produto.getId();
 
         }
@@ -47,12 +45,17 @@ public class CadastroProdutoActivity extends AppCompatActivity {
 
 
     public void onClickExcluir(View v){
-        Intent intent = getIntent();
-        Produto produto = (Produto) intent.getExtras().get("produtoEdicao");
-        intent.putExtra("produtoExcluido", produto);
-        setResult(RESULT_CODE_PRODUTO_EXCLUIDO, intent);
-        finish();
+
+        ProdutoDAO produtoDAO = new ProdutoDAO(getBaseContext());
+        boolean excluiu = produtoDAO.excluir(id);
+        if (excluiu){
+            Toast.makeText(CadastroProdutoActivity.this, "O produto foi excluído com sucesso!", Toast.LENGTH_LONG).show();
+            finish();
+        }else {
+            Toast.makeText(CadastroProdutoActivity.this, "Erro ao excluir!", Toast.LENGTH_LONG).show();
+        }
     }
+
 
 
     public void onClickVoltar(View v){
@@ -60,24 +63,21 @@ public class CadastroProdutoActivity extends AppCompatActivity {
     }
 
     public  void onClickSalvar(View v) {
+
         EditText editTextNome = findViewById(R.id.editText_nome);
         EditText editTextValor = findViewById(R.id.editText_valor);
-
         String nome = editTextNome.getText().toString();
         Float valor = Float.parseFloat(editTextValor.getText().toString());
 
         Produto produto = new Produto(id,nome, valor);
-        Intent intent = new Intent();
+        ProdutoDAO produtoDAO = new ProdutoDAO(getBaseContext());
 
-        if (edicao) {
-            intent.putExtra("produtoEditado" , produto);
-            setResult(RESULT_CODE_PRODUTO_EDITADO, intent);
-
-        } else {
-            intent.putExtra("novoProduto", produto);
-            setResult(RESULT_CODE_NOVO_PRODUTO, intent);
+        boolean salvou = produtoDAO.salvar(produto);
+        if (salvou){
+            Toast.makeText(CadastroProdutoActivity.this, "Produto salvo!", Toast.LENGTH_LONG).show();
+            finish();
+        }else {
+            Toast.makeText(CadastroProdutoActivity.this, "Erro ao salvar!", Toast.LENGTH_LONG).show();
         }
-        finish();
-
     }
 }
